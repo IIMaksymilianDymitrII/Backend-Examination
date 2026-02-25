@@ -9,11 +9,12 @@
     "build": "bun run build.ts"
   },
   "dependencies": {
+    "@fastify/cors": "^11.2.0",
     "@fastify/postgres": "^6.0.2",
     "bun-plugin-tailwind": "^0.1.2",
     "fastify": "^5.7.4",
     "mongodb": "^7.1.0",
-    "pg": "^8.18.0",
+    "pg": "^8.19.0",
     "react": "^19",
     "react-dom": "^19",
     "tailwindcss": "^4.1.11"
