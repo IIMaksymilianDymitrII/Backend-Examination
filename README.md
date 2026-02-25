@@ -36,16 +36,6 @@ This part is for auth & tracking data.
 | height | int |
 | weight | int |
 
-#### Sessions
-
-| Name | Datatype |
-| ------------- | ------------- |
-| id | Serial Primary Key |
-| user_id | Forgen key |
-| exercises | text |
-| workout_id | Mongo ID string |
-| date | Timestamp |
-
 ### Docker Compose file
 
 ```bash
