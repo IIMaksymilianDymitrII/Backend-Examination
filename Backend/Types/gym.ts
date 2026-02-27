@@ -14,12 +14,15 @@ export type SetDetails = {
   volume: number;
 };
 
-export type Exercises = ExerciseCatalog & SetDetails;
+export type Sets = ExerciseCatalog & {
+  performence: SetDetails[]
+  total_exercise_volume: number
+}
 
 export type WorkoutCatalog = {
   title: string;
   creator_id: number; // postgres ID
-  exercise_list: Exercises[];
+  exercise_list: Sets[];
   total_workout_volume: number;
 };
 

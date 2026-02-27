@@ -6,7 +6,7 @@ import {
   type MuscleGroups,
 } from "Backend/Types/gym";
 
-export async function createExercise(
+export async function createExerciseToCatalog(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
@@ -17,7 +17,7 @@ export async function createExercise(
       muscleGroups: MuscleGroups;
     };
 
-    const collection = await db.collection("exercise_catalog");
+    const collection = db.collection("exercise_catalog");
 
     if (!name || name.trim() === "") {
       return reply.status(400).send({ error: "Name is required" });
@@ -57,6 +57,8 @@ export async function createExercise(
   }
 }
 
+
+
 export async function deleteExercise(
   request: FastifyRequest,
   reply: FastifyReply,
@@ -64,7 +66,7 @@ export async function deleteExercise(
   try {
     const { name } = request.params as { name: string };
 
-    const collection = await db.collection("exercise_catalog");
+    const collection = db.collection("exercise_catalog");
 
     if (!name) {
       return reply.status(400).send({ error: "Exercise name is required" });
