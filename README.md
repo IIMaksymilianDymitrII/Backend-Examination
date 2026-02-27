@@ -1,5 +1,9 @@
 # Gym App
 
+To view .drawio files:
+1. Open draw.io
+2. Select File > Import From
+
 ## Techonlogies
 
 ### FrontEnd

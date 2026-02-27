@@ -7,7 +7,6 @@ export async function getExercise(
 ) {
   try {
     const { exercise } = request.params as { exercise: string };
-
     const collection = await db.collection("exercise_catalog");
 
     if (!exercise || exercise === "") {
@@ -32,7 +31,6 @@ export async function getExercise(
 export async function getAllExercises(reply: FastifyReply) {
   try {
     const collection = await db.collection("exercise_catalog");
-
     const result = await collection.find({}).toArray();
 
     if (result.length === 0) {
