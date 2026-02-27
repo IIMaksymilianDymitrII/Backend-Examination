@@ -3,8 +3,8 @@ export type MuscleGroups = string[];
 
 export type ExerciseCatalog = {
   name: string;
-  muscle_group: MuscleGroups;
-  equipment: string;
+  equipment: Equipments;
+  muscleGroups: MuscleGroups;
 };
 
 export type SetDetails = {
