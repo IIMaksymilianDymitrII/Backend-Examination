@@ -1,6 +1,6 @@
 import { type FastifyReply, type FastifyRequest } from "fastify";
 import { db } from "../../../DB/mongo";
-import { type SetDetails, type Sets } from "Backend/Types/gym";
+import { type Sets } from "Backend/Types/gym";
 
 export async function getExercise(
   request: FastifyRequest,
@@ -47,8 +47,9 @@ export async function createSet(request: FastifyRequest, reply: FastifyReply) {
   if (!sets || sets === 0 || sets >= 8) {
     return reply.status(400).send({ error: "Sets are required" });
   }
-  if (reps >= 10)
+  if (sets >= 10)
     return reply.status(400).send({ error: "No more than 10 sets" });
+
   if (!exercise_name || exercise_name.trim() === "") {
     return reply.status(400).send({ error: "Exercise is required" });
   }
