@@ -8,8 +8,11 @@ import fastifyPostgres from "@fastify/postgres";
 import fastifyHelmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import { connectMongo } from "./DB/mongo";
+import fastifyJWT from "@fastify/jwt"
 
 const app = fastify({ logger: true });
+const secret = process.env.JWT_SECRET_KEY
+if (!secret) throw new Error("Set JWT_SECRET_TOKEN")
 
 await app.register(fastifyHelmet);
 await app.register(rateLimit, {
@@ -19,6 +22,7 @@ await app.register(rateLimit, {
 await app.register(cors, {
   origin: "http://localhost:3001"
 });
+await app.register(fastifyJWT, {secret: secret as string})
 
 app.setErrorHandler(
   (error: any, request: FastifyRequest, reply: FastifyReply) => {

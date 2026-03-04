@@ -49,7 +49,7 @@ export async function createExerciseToCatalog(
   });
 }
 
-export async function deleteExercise(
+export async function deleteExerciseFromCatalog(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
