@@ -16,7 +16,7 @@ export async function generateToken(
   return { accessToken, refreshToken };
 }
 
-export async function createUser(
+export async function findUser(
   type: string,
   verificationData: string,
   request: FastifyRequest

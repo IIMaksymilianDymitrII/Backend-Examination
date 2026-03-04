@@ -9,6 +9,7 @@ import fastifyHelmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import { connectMongo } from "./DB/mongo";
 import fastifyJWT from "@fastify/jwt"
+import fastifyOauth2 from "@fastify/oauth2";
 
 const app = fastify({ logger: true });
 const secret = process.env.JWT_SECRET_KEY
@@ -61,6 +62,20 @@ app.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
     error: "Not Found",
     message: `Route ${request.method}:${request.url} does not exist`,
   });
+});
+
+await app.register(fastifyOauth2, {
+  name: "googleOAuth2",
+  scope: ["profile", "email"],
+  credentials:{
+    client: {
+      id: "CLIENT_ID",
+      secret: "CLIENT_SECRET",
+    },
+    auth: fastifyOauth2.GOOGLE_CONFIGURATION
+  },
+  startRedirectPath: "/login/google",
+  callbackUri: "http://localhost:3001/login/google/callback"
 });
 
 await app.register(fastifyPostgres, {
