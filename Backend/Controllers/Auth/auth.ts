@@ -14,7 +14,7 @@ export async function signin(request: FastifyRequest, reply: FastifyReply) {
   const salt: number = 10;
   const hashedPassword: string = await bcrypt.hash(password, salt);
 
-  const query: string = `INSERT INTO users 
+  const query: string = `INSERT INTO users
   (email, password) VALUES ($1,$2)
   RETURNING id, email, role, created_at`;
 
@@ -86,9 +86,7 @@ export async function googleCallback(
   reply: FastifyReply,
 ) {
   const { token } =
-    await request.server.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
-      request,
-    );
+    await request.server.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow( request );
 
   const userinfo: any = await request.server.googleOAuth2.userinfo(token);
 
