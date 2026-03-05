@@ -9,7 +9,7 @@ import fastifyHelmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import { connectMongo } from "./DB/mongo";
 import fastifyJWT from "@fastify/jwt"
-import fastifyOauth2 from "@fastify/oauth2";
+import fastifyOauth2, { type OAuth2Namespace } from "@fastify/oauth2";
 
 const app = fastify({ logger: true });
 const secret = process.env.JWT_SECRET_KEY
@@ -77,6 +77,12 @@ await app.register(fastifyOauth2, {
   startRedirectPath: "/login/google",
   callbackUri: "http://localhost:3001/login/google/callback"
 });
+
+declare module "fastify" {
+  interface FastifyInstance {
+    googleOAuth2: OAuth2Namespace;
+  }
+}
 
 await app.register(fastifyPostgres, {
   connectionString: process.env.POSTGRES_LINK + "/users",

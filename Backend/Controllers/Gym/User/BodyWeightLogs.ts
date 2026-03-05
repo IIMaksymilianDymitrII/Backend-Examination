@@ -21,7 +21,7 @@ export async function getBodyWeightLog(
 
   return reply.status(200).send(result);
 }
-export async function getAllExercises(reply: FastifyReply) {
+export async function getAllBodyWeightLogs(reply: FastifyReply) {
   const collection = db.collection("body_weight_log");
   const result = await collection.find({}).toArray();
 
