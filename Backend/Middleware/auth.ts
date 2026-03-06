@@ -5,7 +5,7 @@ export async function verifyUser(
   reply: FastifyReply,
   verifyAdmin: boolean = false,
 ) {
-  const decoded = await request.jwtVerify<{ id: string; role: string }>();
+  const decoded = await request.jwtVerify<{ id: number; role: string }>();
   if (verifyAdmin && decoded.role !== "Admin") {
     return reply.status(403).send({ message: "You are not Authorized" });
   }

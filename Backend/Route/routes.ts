@@ -33,6 +33,7 @@ async function userRoutes(
   server.get("/sets/:setId", { preHandler: auth }, exerciseCtrls.getSet);
 
   server.post("/workout", { preHandler: auth }, workoutCtrls.createWorkout);
+  server.post("/workout/:id", { preHandler: auth }, workoutCtrls.updateWorkout);
   server.get("/workout/:id", { preHandler: auth }, workoutCtrls.getWorkout);
   server.get("/workouts", { preHandler: auth }, workoutCtrls.getAllWorkouts);
   server.delete(

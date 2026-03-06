@@ -1,17 +1,14 @@
 import { type FastifyReply, type FastifyRequest } from "fastify";
 import { db } from "../../../DB/mongo";
 import { type Sets, type WorkoutCatalog } from "Backend/Types/gym";
+import * as workoutService from "../../../Services/User/Workout";
 
 export async function getAllWorkouts(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const collection = await db.collection("workout_catalog");
-  const result = await collection.find({}).toArray();
-
-  if (result.length === 0) {
-    reply.status(404).send({ message: "No Workout Found" });
-  }
+  const decoded = await request.jwtVerify<{ id: number }>();
+  const result = await workoutService.getAllWorkoutSerivce(reply, decoded.id);
 
   return reply.status(200).send(result);
 }
@@ -20,43 +17,25 @@ export async function createWorkout(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { title, creator_id, exercise_list, total_workout_volume } =
-    request.body as {
-      title: string;
-      creator_id: number;
-      exercise_list: Sets[];
-      total_workout_volume: number;
-    };
+  const { title, exercise_list, total_workout_volume } = request.body as {
+    title: string;
+    exercise_list: Sets[];
+    total_workout_volume: number;
+  };
 
-  const collection = await db.collection("workout_catalog");
+  const decoded = await request.jwtVerify<{ id: number }>();
 
-  if (!title || title.trim() === "") {
-    return reply.status(400).send({ error: "Title is required" });
-  }
-  if (!creator_id) {
-    return reply.status(400).send({ error: "You need to be a User" });
-  }
-  if (
-    exercise_list.length === 0 ||
-    !exercise_list ||
-    !Array.isArray(exercise_list)
-  ) {
-    return reply
-      .status(400)
-      .send({ error: "At Least One Exercise is Required" });
-  }
-
-  const newWorkout = {
+  const [result, newWorkout] = await workoutService.createWorkoutService(
+    reply,
+    decoded.id,
     title,
-    creator_id,
     exercise_list,
     total_workout_volume,
-  };
-  const result = await collection.insertOne(<WorkoutCatalog>newWorkout);
+  );
 
-  return reply.status(200).send({
+  return reply.status(201).send({
     _id: result.insertedId,
-    newExercise: newWorkout,
+    newWorkout,
   });
 }
 
@@ -64,18 +43,50 @@ export async function deleteWorkout(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { workout } = request.params as { workout: string };
+  const decoded = await request.jwtVerify<{ id: number }>();
+  const { title } = request.params as { title: string };
+
+  await workoutService.deleteWorkoutService(reply, decoded.id, title);
+
+  return reply.status(200).send({ message: "Workout deleted", title });
+}
+
+export async function updateWorkout(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  const decoded = await request.jwtVerify<{ id: number }>();
+
+  const { title, typeOfChange, changedData } = request.body as {
+    title: string;
+    typeOfChange: string;
+    changedData: string | number;
+  };
+
+  const result = workoutService.updateWorkoutService(
+    reply,
+    decoded.id,
+    title,
+    typeOfChange,
+    changedData,
+  );
+
+  return reply.status(200).send(result);
+}
+
+export async function getWorkout(request: FastifyRequest, reply: FastifyReply) {
+  const decoded = await request.jwtVerify<{ id: number }>();
+  const { title } = request.params as { title: string };
+
   const collection = await db.collection("workout_catalog");
+  const result = await collection.findOne({
+    user_id: decoded.id,
+    title: title,
+  });
 
-  if (!workout) {
-    return reply.status(400).send({ error: "Workout title is required" });
+  if (!result) {
+    reply.status(404).send({ message: "No Workout Found" });
   }
 
-  const result = await collection.deleteMany({ title: workout });
-
-  if (result.deletedCount === 0) {
-    return reply.status(404).send({ error: "Workout not found" });
-  }
-
-  return reply.status(200).send({ message: "Workout deleted", workout });
+  return reply.status(200).send(result);
 }

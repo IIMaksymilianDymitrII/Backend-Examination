@@ -90,3 +90,7 @@ export async function createSet(request: FastifyRequest, reply: FastifyReply) {
     newExercise: newSet,
   });
 }
+
+export async function removeSet(request: FastifyRequest, reply: FastifyReply) { }
+export async function getAllSets(request: FastifyRequest, reply: FastifyReply) { }
+export async function getSet(request: FastifyRequest, reply: FastifyReply) { }
