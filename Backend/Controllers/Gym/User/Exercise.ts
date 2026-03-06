@@ -21,7 +21,10 @@ export async function getExercise(
 
   return reply.status(200).send(result);
 }
-export async function getAllExercises(reply: FastifyReply) {
+export async function getAllExercises(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const collection = db.collection("exercise_catalog");
   const result = await collection.find({}).toArray();
 

@@ -3,7 +3,7 @@ import fastify, {
   type FastifyRequest,
 } from "fastify";
 import cors from "@fastify/cors";
-import routes from "./routes";
+import routes from "./Route/routes";
 import fastifyPostgres from "@fastify/postgres";
 import fastifyHelmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";

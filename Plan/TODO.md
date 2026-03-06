@@ -2,11 +2,13 @@
 
 ## Main
 
-- [ ] Complete Admin Contorllers (PHP)
-- [ ] Create another Admin User
-- [ ] Update any Account
-- [ ] Delete any Account
-- [ ] Show all Accounts
+### Complete Admin Contorllers 
+- [x] Create another Admin User
+- [x] Update any Account
+- [x] Delete any Account
+- [x] Show all Accounts
+
+---
 
 - [ ] Simplify controllers with services
 - [ ] Create a Seed

@@ -2,7 +2,10 @@ import { type FastifyReply, type FastifyRequest } from "fastify";
 import { db } from "../../../DB/mongo";
 import { type Sets, type WorkoutCatalog } from "Backend/Types/gym";
 
-export async function getAllWorkouts(reply: FastifyReply) {
+export async function getAllWorkouts(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const collection = await db.collection("workout_catalog");
   const result = await collection.find({}).toArray();
 
