@@ -11,6 +11,9 @@ import * as workoutCtrls from "../Controllers/Gym/User/Workout";
 import * as exerciseAdminCtrls from "../Controllers/Gym/Admin/Exercise";
 import * as authAdmin from "../Controllers/Auth/admin";
 
+import * as gymSchema from "../Schema/Gym";
+import * as authSchema from "../Schema/Auth"
+
 import { verifyUser } from "Backend/Middleware/auth";
 
 async function userRoutes(
@@ -20,10 +23,28 @@ async function userRoutes(
   const auth = (request: FastifyRequest, reply: FastifyReply) =>
     verifyUser(request, reply);
 
-  server.get("/exercises", { preHandler: auth }, exerciseCtrls.getAllExercises);
+  server.get(
+    "/exercises",
+    {
+      schema: {
+        response: {
+          200: {
+            type: "array",
+            items: gymSchema.ExerciseCatalogSchema,
+          },
+        },
+      },
+      preHandler: auth,
+    },
+    exerciseCtrls.getAllExercises,
+  );
+
   server.get(
     "/exercise/:exerciseId",
-    { preHandler: auth },
+    {
+      schema: { response: { 200: gymSchema.ExerciseCatalogSchema } },
+      preHandler: auth,
+    },
     exerciseCtrls.getExercise,
   );
 
