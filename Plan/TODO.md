@@ -2,7 +2,7 @@
 
 ## Main
 
-### Complete Admin Contorllers 
+### Complete Admin Controllers 
 - [x] Create another Admin User
 - [x] Update any Account
 - [x] Delete any Account
@@ -12,12 +12,12 @@
 
 - [ ] Simplify controllers with services
 - [ ] Create a Seed
-- [ ] Complete Routes
+- [x] Complete Routes
 
 ## Fullstack
 
 - [ ] Create a Matching frontend
 
-## Possible Imporvments
+## Possible Improvments
 
 - [ ] Create a ChatBot or an Agent

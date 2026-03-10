@@ -3,13 +3,15 @@ import fastify, {
   type FastifyRequest,
 } from "fastify";
 import cors from "@fastify/cors";
-import routes from "./Route/routes";
 import fastifyPostgres from "@fastify/postgres";
 import fastifyHelmet from "@fastify/helmet";
-import rateLimit from "@fastify/rate-limit";
-import { connectMongo } from "./DB/mongo";
 import fastifyJWT from "@fastify/jwt"
 import fastifyOauth2, { type OAuth2Namespace } from "@fastify/oauth2";
+import fastifyCookie from "@fastify/cookie";
+import rateLimit from "@fastify/rate-limit";
+
+import { connectMongo } from "./DB/mongo";
+import routes from "./Route/routes";
 
 const app = fastify({ logger: true });
 const secret = process.env.JWT_SECRET_KEY
@@ -63,6 +65,8 @@ app.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
     message: `Route ${request.method}:${request.url} does not exist`,
   });
 });
+
+await app.register(fastifyCookie)
 
 await app.register(fastifyOauth2, {
   name: "googleOAuth2",

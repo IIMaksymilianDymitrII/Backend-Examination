@@ -1,5 +1,6 @@
 import { type FastifyReply, type FastifyRequest } from "fastify";
 import type { TokenPayLoad } from "Backend/Types/jwt";
+import bcrypt from "bcrypt"
 
 export async function loginUser(
   email: string,
@@ -7,7 +8,7 @@ export async function loginUser(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const user = await authServices.findUser("email", email, request, reply);
+  const user = await findUser("email", email, request, reply);
 
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) return reply.status(401).send({ message: "False Password" });
@@ -30,13 +31,11 @@ export async function generateToken(
 
   reply.setCookie("accessToken", accessToken, {
     path: "/",
-    httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   });
   reply.setCookie("refreshToken", refreshToken, {
     path: "/",
-    httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   });
@@ -48,14 +47,14 @@ export async function refreshToken(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { refresh_token } = request.body as { refresh_token: string };
+  const refresh_token  = request.cookies.refreshToken
   if (!refresh_token) {
     return reply.status(401).send({ message: "No Refresh Token" });
   }
 
   const decoded = await request.jwtVerify<TokenPayLoad>();
   if (decoded.type !== "refresh") {
-    return reply.status(401).send({ message: "Not Authorrized" });
+    return reply.status(401).send({ message: "Not Authorized" });
   }
 
   const tokens = await generateToken(decoded.user_id, decoded.role, reply);

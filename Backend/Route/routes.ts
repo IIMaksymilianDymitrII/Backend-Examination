@@ -10,6 +10,7 @@ import * as workoutCtrls from "../Controllers/Gym/User/Workout";
 
 import * as exerciseAdminCtrls from "../Controllers/Gym/Admin/Exercise";
 import * as authAdmin from "../Controllers/Auth/admin";
+import { refreshToken } from "Backend/Services/User/auth";
 
 import * as gymSchema from "../Schema/Gym";
 import * as authSchema from "../Schema/Auth"
@@ -22,7 +23,7 @@ async function userRoutes(
 ) {
   const auth = (request: FastifyRequest, reply: FastifyReply) =>
     verifyUser(request, reply);
-
+server.post("/auth/refresh", refreshToken);
   server.get(
     "/exercises",
     {
