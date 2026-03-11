@@ -89,14 +89,14 @@ declare module "fastify" {
 }
 
 await app.register(fastifyPostgres, {
-  connectionString: process.env.POSTGRES_LINK + "/users",
+  connectionString: process.env.POSTGRES_URI,
 });
 await app.register(connectMongo);
 
 await app.register(routes);
 
 try {
-  await app.listen({ port: 3001, host: "0.0.0.0" }, (address) =>
+  app.listen({ port: 3001, host: "0.0.0.0" }, (address) =>
     console.log(`Server is running at ${address}`),
   );
 } catch (err) {

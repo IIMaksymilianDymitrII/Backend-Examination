@@ -10,6 +10,7 @@ import * as workoutCtrls from "../Controllers/Gym/User/Workout";
 
 import * as exerciseAdminCtrls from "../Controllers/Gym/Admin/Exercise";
 import * as authAdmin from "../Controllers/Auth/admin";
+import * as auth from "../Controllers/Auth/auth";
 import { refreshToken } from "Backend/Services/User/auth";
 
 import * as gymSchema from "../Schema/Gym";
@@ -21,8 +22,14 @@ async function userRoutes(
   server: FastifyInstance,
   options: FastifyPluginOptions,
 ) {
-  const auth = (request: FastifyRequest, reply: FastifyReply) =>
+  const authenticate = (request: FastifyRequest, reply: FastifyReply) =>
     verifyUser(request, reply);
+  
+  server.post("/auth/signin", auth.signin);
+  server.post("/auth/login", auth.login);
+  server.post("/auth/signout", auth.signout);
+  server.get("/login/google/callback", auth.googleCallback);
+  
 server.post("/auth/refresh", refreshToken);
   server.get(
     "/exercises",
@@ -35,7 +42,7 @@ server.post("/auth/refresh", refreshToken);
           },
         },
       },
-      preHandler: auth,
+      preHandler: authenticate,
     },
     exerciseCtrls.getAllExercises,
   );
@@ -44,23 +51,23 @@ server.post("/auth/refresh", refreshToken);
     "/exercise/:exerciseId",
     {
       schema: { response: { 200: gymSchema.ExerciseCatalogSchema } },
-      preHandler: auth,
+      preHandler: authenticate,
     },
     exerciseCtrls.getExercise,
   );
 
-  server.post("/sets", { preHandler: auth }, exerciseCtrls.createSet);
-  server.delete("/sets/:id", { preHandler: auth }, exerciseCtrls.removeSet);
-  server.get("/sets", { preHandler: auth }, exerciseCtrls.getAllSets);
-  server.get("/sets/:setId", { preHandler: auth }, exerciseCtrls.getSet);
+  server.post("/sets", { preHandler: authenticate }, exerciseCtrls.createSet);
+  server.delete("/sets/:id", { preHandler: authenticate }, exerciseCtrls.removeSet);
+  server.get("/sets", { preHandler: authenticate }, exerciseCtrls.getAllSets);
+  server.get("/sets/:setId", { preHandler: authenticate }, exerciseCtrls.getSet);
 
-  server.post("/workout", { preHandler: auth }, workoutCtrls.createWorkout);
-  server.post("/workout/:id", { preHandler: auth }, workoutCtrls.updateWorkout);
-  server.get("/workout/:id", { preHandler: auth }, workoutCtrls.getWorkout);
-  server.get("/workouts", { preHandler: auth }, workoutCtrls.getAllWorkouts);
+  server.post("/workout", { preHandler: authenticate }, workoutCtrls.createWorkout);
+  server.post("/workout/:id", { preHandler: authenticate }, workoutCtrls.updateWorkout);
+  server.get("/workout/:id", { preHandler: authenticate }, workoutCtrls.getWorkout);
+  server.get("/workouts", { preHandler: authenticate }, workoutCtrls.getAllWorkouts);
   server.delete(
     "/workouts/:id",
-    { preHandler: auth },
+    { preHandler: authenticate },
     workoutCtrls.deleteWorkout,
   );
 }
@@ -89,8 +96,8 @@ async function adminRoutes(
     { preHandler: adminAuth },
     authAdmin.deleteAccount,
   );
-  server.get("/user/", { preHandler: adminAuth }, authAdmin.showAllUsers);
-  server.post("/user/", { preHandler: adminAuth }, authAdmin.updateAcount);
+  server.get("/user", { preHandler: adminAuth }, authAdmin.showAllUsers);
+  server.post("/user", { preHandler: adminAuth }, authAdmin.updateAcount);
 }
 
 async function routes(server: FastifyInstance, options: FastifyPluginOptions) {

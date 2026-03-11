@@ -2,7 +2,6 @@ import { type FastifyReply, type FastifyRequest } from "fastify";
 import * as authServices from "../../Services/User/auth";
 import * as adminAuthServices from "../../Services/Admin/auth";
 
-// Add later a send mail for email verification
 export async function signin(request: FastifyRequest, reply: FastifyReply) {
   const { email, password } = request.body as {
     email: string;
@@ -28,6 +27,11 @@ export async function login(request: FastifyRequest, reply: FastifyReply) {
     password: string;
   };
   const user = await authServices.loginUser(email, password, request, reply);
+  
+  if (reply.statusCode >= 400) {
+    return; 
+  }
+  
   const token = authServices.generateToken(user.id, user.role, reply);
 
   reply.status(200).send({ message: "Login Succsessful", ...token });
@@ -44,9 +48,7 @@ export async function googleCallback(
   reply: FastifyReply,
 ) {
   const { token } =
-    await request.server.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
-      request,
-    );
+    await request.server.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow( request );
 
   const userinfo: any = await request.server.googleOAuth2.userinfo(token);
   const google_id: string = userinfo.sub;
